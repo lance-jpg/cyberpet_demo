@@ -1,0 +1,78 @@
+{
+  "manifest_version": 3,
+  "name": "CyberPet — Tu Compañero de Seguridad",
+  "short_name": "CyberPet",
+  "version": "4.5.0",
+  "description": "Una mascota virtual que te protege mientras navegas y te enseña buenas prácticas de ciberseguridad.",
+  "icons": {
+    "16": "assets/sprites/neutral.png",
+    "48": "assets/sprites/happy.png",
+    "128": "assets/sprites/happy.png"
+  },
+  "permissions": [
+    "storage",
+    "notifications",
+    "activeTab",
+    "scripting",
+    "tabs",
+    "webNavigation",
+    "alarms"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "assets/sprites/neutral.png",
+      "48": "assets/sprites/happy.png",
+      "128": "assets/sprites/happy.png"
+    },
+    "default_title": "CyberPet"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content/content.js"
+      ],
+      "css": [
+        "content/pet-overlay.css"
+      ],
+      "run_at": "document_end",
+      "all_frames": false
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "dashboard/dashboard.html",
+        "dashboard/dashboard.css",
+        "dashboard/dashboard.js",
+        "popup/shared.css",
+        "utils/shared.js",
+        "time-out.js",
+        "assets/sprites/neutral.png",
+        "assets/sprites/happy.png",
+        "assets/sprites/sick.png",
+        "assets/sprites/wait.png",
+        "time-out.html",
+        "assets/clothes/*.png"
+      ],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ]
+    }
+  ],
+  "content_security_policy": {
+  "extension_pages": "script-src 'self'; object-src 'none';"
+}
+}

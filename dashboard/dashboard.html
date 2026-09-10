@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>CyberPet Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../popup/shared.css">
+  <link rel="stylesheet" href="dashboard.css">
+  <script src="../utils/shared.js"></script>
+
+</head>
+<body>
+
+<!--  SIDEBAR  -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div id="sidebar-pet-wrapper" style="position:relative;display:inline-block;">
+      <img id="sidebar-pet-img" src="../assets/sprites/neutral.png" alt="pet" class="sidebar-pet-img">
+    </div>
+    <div>
+      <div class="sidebar-pet-name" id="sidebar-pet-name">CyberPet</div>
+      <div class="sidebar-title"   id="user-title-dash">Novato Digital</div>
+    </div>
+  </div>
+
+  <!--  NAVIGATION  -->
+  <!-- PENDIENTE LOGOS -->
+  <nav class="sidebar-nav">
+    <a class="nav-item active" data-page="home">🏠 Inicio</a>
+    <a class="nav-item"        data-page="stats">📊 Estadísticas</a>
+    <a class="nav-item"        data-page="vault">🔐 Bóveda</a>
+    <a class="nav-item"        data-page="tools">🔍 Herramientas</a>
+     <a class="nav-item"        data-page="edu">🎓 Modo Educativo</a>
+    <a class="nav-item"        data-page="family">👨‍👩‍👧 Family Mode</a>
+    <a class="nav-item"        data-page="shop">🛍️ Tienda</a>
+    <a class="nav-item"        data-page="inventory">🎒 Inventario</a>
+    <a class="nav-item"        data-page="chat">💬 Chat</a>
+    <a class="nav-item"        data-page="badges">🏆 Logros</a>
+    <a class="nav-item"        data-page="settings">⚙️ Ajustes</a>
+  </nav>
+
+  <div class="sidebar-stats">
+    <div class="ss-chip">🏆 <span id="sidebar-points">0</span> pts</div>
+    <div class="ss-chip">🪙 <span id="sidebar-coins">0</span></div>
+    <div class="ss-chip">⏱️ <span id="sidebar-time">0m</span></div>
+  </div>
+</aside>
+
+<!--  MAIN  -->
+<main class="main-content">
+
+  <!-- HOME  -->
+  <section class="page active" id="page-home">
+    <h1 class="page-title">🏠 Inicio</h1>
+
+    <!-- Alerta muerte -->
+    <div class="death-alert" id="death-alert" style="display:none;">
+      <span>💀 Tu CyberPet ha muerto. Revívelo para seguir protegido.</span>
+      <button class="btn-danger" id="btn-revive">Revivir (−50 pts)</button>
+    </div>
+
+    <!-- HERO: gato + info lado a lado -->
+    <div class="home-hero">
+
+      <!-- Columna gato -->
+      <div class="home-hero-pet">
+        <div class="home-pet-aura" id="home-pet-aura">
+          <div id="main-pet-wrapper" style="position:relative;display:inline-block;">
+            <img id="main-pet-img" src="../assets/sprites/neutral.png" alt="CyberPet" class="main-pet-img-hero">
+          </div>
+        </div>
+        <div class="home-pet-name" id="pet-name-dash">CyberPet</div>
+        <div class="home-pet-status" id="pet-status-text">Estado neutral 😐</div>
+        <p class="home-pet-msg" id="pet-message">Cargando...</p>
+        <button id="toggle-pet-btn" class="btn-secondary home-toggle-btn">👁️ Ocultar CyberCat</button>
+      </div>
+
+      <!-- Columna stats + salud -->
+      <div class="home-hero-info">
+
+        <!-- Salud con barra -->
+        <div class="home-health-card">
+          <div class="home-health-top">
+            <span class="home-health-icon">❤️</span>
+            <span class="home-health-label">Salud</span>
+            <span class="home-health-val" id="cat-health">100%</span>
+          </div>
+          <div class="home-health-bar-bg">
+            <div class="home-health-bar-fill" id="home-health-bar"></div>
+          </div>
+        </div>
+
+        <!-- Grid de stats principales -->
+        <div class="home-stats-grid">
+          <div class="home-stat-chip primary">
+            <span class="hsc-icon">🏆</span>
+            <span class="hsc-val" id="total-points">0</span>
+            <span class="hsc-lbl">Puntos</span>
+          </div>
+          <div class="home-stat-chip gold">
+            <span class="hsc-icon">🪙</span>
+            <span class="hsc-val" id="total-coins">0</span>
+            <span class="hsc-lbl">Monedas</span>
+          </div>
+          <div class="home-stat-chip red">
+            <span class="hsc-icon">🛡️</span>
+            <span class="hsc-val" id="threats-count">0</span>
+            <span class="hsc-lbl">Amenazas</span>
+          </div>
+          <div class="home-stat-chip green">
+            <span class="hsc-icon">⏱️</span>
+            <span class="hsc-val" id="screen-time-val">0m</span>
+            <span class="hsc-lbl">Hoy en línea</span>
+          </div>
+          <div class="home-stat-chip blue">
+            <span class="hsc-icon">🔥</span>
+            <span class="hsc-val" id="streak-val-dash">0</span>
+            <span class="hsc-lbl">Racha (días)</span>
+          </div>
+          <div class="home-stat-chip purple">
+            <span class="hsc-icon">📋</span>
+            <span class="hsc-val" id="home-pages-today">0</span>
+            <span class="hsc-lbl">Páginas hoy</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Actividad reciente -->
+    <div class="card">
+      <h2 class="card-title">📋 Actividad Reciente</h2>
+      <div id="activity-list" class="activity-list"></div>
+    </div>
+  </section>
+
+  <!-- STATS  -->
+  <section class="page" id="page-stats">
+    <h1 class="page-title">📊 Estadísticas</h1>
+
+    <!-- Fila 1: stats de hoy -->
+    <div class="stats-grid" style="margin-bottom:14px;">
+      <div class="stat-card primary"><div class="stat-icon">📄</div><div><span class="stat-val" id="stat-pages-today">0</span><span class="stat-lbl">Páginas hoy</span></div></div>
+      <div class="stat-card red">   <div class="stat-icon">⚠️</div><div><span class="stat-val" id="stat-threats-today">0</span><span class="stat-lbl">Amenazas hoy</span></div></div>
+      <div class="stat-card gold">  <div class="stat-icon">🔤</div><div><span class="stat-val" id="stat-keywords-today">0</span><span class="stat-lbl">Palabras censuradas hoy</span></div></div>
+      <div class="stat-card green"> <div class="stat-icon">⏱️</div><div><span class="stat-val" id="stat-time-today">0m</span><span class="stat-lbl">Tiempo navegando hoy</span></div></div>
+      <div class="stat-card blue">  <div class="stat-icon">🏆</div><div><span class="stat-val" id="stat-total-points">0</span><span class="stat-lbl">Puntos acumulados</span></div></div>
+      <div class="stat-card">       <div class="stat-icon">🔥</div><div><span class="stat-val" id="stat-streak">0</span><span class="stat-lbl">Días seguros consecutivos</span></div></div>
+    </div>
+
+    <!-- Screen time del Dashboard -->
+    <div class="card stat-screentime-card">
+      <h2 class="card-title">🖥️ Uso del Dashboard</h2>
+      <div class="dash-usage-grid">
+        <div class="dash-usage-item">
+          <span class="du-icon">🕐</span>
+          <span class="du-val" id="stat-dash-time-today">0m</span>
+          <span class="du-lbl">Tiempo hoy</span>
+        </div>
+        <div class="dash-usage-item">
+          <span class="du-icon">📅</span>
+          <span class="du-val" id="stat-dash-opens-today">0</span>
+          <span class="du-lbl">Abierto hoy</span>
+        </div>
+        <div class="dash-usage-item">
+          <span class="du-icon">⏳</span>
+          <span class="du-val" id="stat-dash-time-total">0m</span>
+          <span class="du-lbl">Tiempo total</span>
+        </div>
+        <div class="dash-usage-item">
+          <span class="du-icon">🗓️</span>
+          <span class="du-val" id="stat-dash-opens-total">0</span>
+          <span class="du-lbl">Veces abierto (total)</span>
+        </div>
+        <div class="dash-usage-item">
+          <span class="du-icon">📊</span>
+          <span class="du-val" id="stat-dash-avg-session">0m</span>
+          <span class="du-lbl">Sesión promedio</span>
+        </div>
+        <div class="dash-usage-item">
+          <span class="du-icon">📆</span>
+          <span class="du-val" id="stat-dash-last-open">—</span>
+          <span class="du-lbl">Última apertura</span>
+        </div>
+      </div>
+      <!-- Barra progreso sesión actual -->
+      <div class="dash-session-bar-wrap" id="dash-session-bar-wrap" style="display:none;">
+        <div class="dash-session-bar-label">
+          <span>⏱️ Sesión actual: <strong id="stat-dash-session-now">0m</strong></span>
+          <span id="stat-dash-session-live" class="dash-live-dot"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráfica semanal -->
+    <div class="card">
+      <h2 class="card-title">📈 Actividad Semanal</h2>
+      <div class="chart-legend">
+        <span class="legend-dot" style="background:var(--accent)"></span> Normal &nbsp;
+        <span class="legend-dot" style="background:#ef4444"></span> Con amenazas
+      </div>
+      <canvas id="weekly-chart" width="680" height="140" style="width:100%;max-width:680px;"></canvas>
+    </div>
+
+    <!-- Resumen total histórico -->
+    <div class="card">
+      <h2 class="card-title">📦 Resumen Total</h2>
+      <div class="stats-grid" style="margin-bottom:0;">
+        <div class="stat-card primary"><div class="stat-icon">🌐</div><div><span class="stat-val" id="stat-total-pages">0</span><span class="stat-lbl">Páginas visitadas (total)</span></div></div>
+        <div class="stat-card red">   <div class="stat-icon">🛡️</div><div><span class="stat-val" id="stat-total-threats">0</span><span class="stat-lbl">Amenazas bloqueadas (total)</span></div></div>
+        <div class="stat-card gold">  <div class="stat-icon">🪙</div><div><span class="stat-val" id="stat-total-coins">0</span><span class="stat-lbl">Monedas acumuladas</span></div></div>
+        <div class="stat-card green"> <div class="stat-icon">🏅</div><div><span class="stat-val" id="stat-total-badges">0</span><span class="stat-lbl">Logros desbloqueados</span></div></div>
+      </div>
+    </div>
+
+    <!-- Top páginas -->
+    <div class="card">
+      <h2 class="card-title">🌐 Sitios más visitados</h2>
+      <div id="top-pages-list"></div>
+    </div>
+
+    <!-- Historial de amenazas -->
+    <div class="card">
+      <h2 class="card-title">🎣 Historial de Amenazas</h2>
+      <div id="threat-list" class="threat-list"></div>
+    </div>
+  </section>
+
+  <!--  VAULT  -->
+  <section class="page" id="page-vault">
+    <h1 class="page-title">🔐 Bóveda de Contraseñas</h1>
+
+    <!-- Vista bloqueada -->
+    <div id="dash-vault-lock" class="vault-lock-view">
+      <div class="lock-icon">🔒</div>
+      <h3>Bóveda Bloqueada</h3>
+      <p class="vault-sub">Ingresa tu PIN para acceder a tus contraseñas cifradas</p>
+      <div class="vault-pin-row">
+        <input type="password" id="dash-vault-pin-input" class="vault-pin-input"
+               maxlength="4" placeholder="••••">
+        <button class="btn-primary" id="dash-vault-unlock-btn" style="width:auto;padding:10px 20px;">
+          Desbloquear 🔓
+        </button>
+      </div>
+    </div>
+
+    <!-- Vista desbloqueada -->
+    <div id="dash-vault-open" style="display:none;">
+      <div class="vault-toolbar">
+        <input type="text" id="dash-vault-search" class="search-input" placeholder="🔍 Buscar sitio o usuario...">
+        <button class="btn-green" id="dash-add-vault-btn">➕ Añadir</button>
+        <button class="btn-danger-sm" id="dash-vault-lock-btn">🔒 Bloquear</button>
+      </div>
+
+      <!-- Formulario añadir -->
+      <div id="dash-vault-form" class="vault-form" style="display:none;">
+        <h3 style="margin-bottom:12px;color:var(--primary);">➕ Nueva contraseña</h3>
+        <div class="vault-form-grid">
+          <input type="text"     class="form-input" id="dv-site" placeholder="Sitio web (ej: google.com)">
+          <input type="text"     class="form-input" id="dv-user" placeholder="Usuario / Email">
+          <div class="pwd-row">
+            <input type="password" class="form-input" id="dv-pwd" placeholder="Contraseña" style="flex:1;margin:0;">
+            <button class="btn-icon" id="dv-toggle">👁️</button>
+            <button class="btn-icon" id="dv-gen" title="Generar contraseña segura">🔑</button>
+          </div>
+          <div class="strength-bg"><div id="dv-pwd-bar" class="strength-fill"></div></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:10px;">
+          <button class="btn-primary" id="dv-save" style="width:auto;padding:10px 20px;">💾 Guardar</button>
+          <button class="btn-secondary" id="dv-cancel" style="width:auto;padding:10px 20px;">Cancelar</button>
+        </div>
+      </div>
+
+      <!-- Lista de entradas -->
+      <div id="dash-vault-entries" class="vault-entries"></div>
+    </div>
+  </section>
+
+  <!--  SHOP  -->
+  <section class="page" id="page-shop">
+    <h1 class="page-title">🛍️ Tienda</h1>
+    <div class="shop-balance-bar">
+      <span class="balance-pill">🪙 <span id="shop-coins-dash">0</span> monedas</span>
+      <span class="balance-pill">🏆 <span id="shop-points-dash">0</span> puntos</span>
+    </div>
+    <div class="shop-tabs-dash">
+      <button class="shop-tab-dash active" data-type="cloth">👕 Ropa</button>
+      <button class="shop-tab-dash" data-type="item">🎁 Items</button>
+      <button class="shop-tab-dash" data-type="title">🏅 Títulos</button>
+      <button class="shop-tab-dash" data-type="extra_time" id="dash-tab-extra-time">⏰ Tiempo</button>
+    </div>
+    <div class="shop-grid-dash" id="shop-grid-dash"></div>
+  </section>
+
+  <!-- TOOLS -->
+  <section class="page" id="page-tools">
+    <h1 class="page-title">🔍 Herramientas de Seguridad</h1>
+
+    <div class="tools-layout">
+
+      <!-- Verificador de contraseña -->
+      <div class="tool-card">
+        <div class="tool-card-header"><span class="tool-big-icon">🔐</span><div><h3>Verificador de Contraseña</h3><p>Analiza la fortaleza en tiempo real</p></div></div>
+        <div class="tool-body">
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="password" id="dash-pwd-input" class="tool-input" placeholder="Escribe una contraseña..." style="flex:1;">
+          </div>
+          <div class="strength-bg" style="margin-top:8px;"><div id="dash-pwd-bar" class="strength-fill"></div></div>
+          <p id="dash-pwd-label" style="font-size:.83rem;margin-top:4px;color:#667799;"></p>
+        </div>
+      </div>
+
+      <!-- Generador de contraseña -->
+      <div class="tool-card">
+        <div class="tool-card-header"><span class="tool-big-icon">🔑</span><div><h3>Generador de Contraseña</h3><p>Crea contraseñas súper seguras</p></div></div>
+        <div class="tool-body">
+          <label style="font-size:.83rem;color:#667799;">Longitud: <strong id="dash-gen-len-val">16</strong></label>
+          <input type="range" id="dash-gen-len" min="8" max="32" value="16"
+                 style="width:100%;margin:6px 0 10px;accent-color:var(--primary);">
+          <div style="display:flex;gap:8px;">
+            <button class="btn-primary" id="dash-gen-btn" style="width:auto;padding:9px 16px;">Generar</button>
+            <input type="text" id="dash-gen-out" class="tool-input" readonly placeholder="Aquí aparecerá..." style="flex:1;font-family:monospace;display:none;">
+            <button class="btn-icon" id="dash-gen-copy" style="display:none;">📋</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- HIBP email -->
+      <div class="tool-card">
+        <div class="tool-card-header"><span class="tool-big-icon">🕵️</span><div><h3>¿Fui Hackeado?</h3><p>Verifica si tu email está en filtraciones</p></div></div>
+        <div class="tool-body">
+          <div style="display:flex;gap:8px;">
+            <input type="email" id="hibp-email-dash" class="tool-input" placeholder="tucorreo@ejemplo.com" style="flex:1;">
+            <button class="btn-primary" id="hibp-check-dash" style="width:auto;padding:9px 14px;">Verificar</button>
+          </div>
+          <div id="hibp-result-dash" class="tool-result"></div>
+        </div>
+      </div>
+
+      <!-- HIBP password -->
+      <div class="tool-card">
+        <div class="tool-card-header"><span class="tool-big-icon">🔓</span><div><h3>¿Contraseña Filtrada?</h3><p>k-anonymity: nunca se envía la contraseña completa</p></div></div>
+        <div class="tool-body">
+          <div style="display:flex;gap:8px;">
+            <input type="password" id="hibp-pwd-input" class="tool-input" placeholder="Contraseña a verificar..." style="flex:1;">
+            <button class="btn-primary" id="hibp-pwd-check" style="width:auto;padding:9px 14px;">Verificar</button>
+          </div>
+          <div id="hibp-pwd-result" class="tool-result"></div>
+        </div>
+      </div>
+
+      <!-- VirusTotal -->
+      <div class="tool-card tool-link-card">
+        <div class="tool-card-header"><span class="tool-big-icon">🔬</span><div><h3>VirusTotal</h3><p>Analiza URLs, archivos y hashes con 70+ antivirus</p></div></div>
+        <button class="btn-primary" id="btn-virustotal" style="width:100%;margin-top:12px;">Abrir VirusTotal →</button>
+      </div>
+
+      <!-- Google Safe Browsing -->
+      <div class="tool-card tool-link-card">
+        <div class="tool-card-header"><span class="tool-big-icon">🛡️</span><div><h3>Google Safe Browsing</h3><p>Verifica si un sitio es peligroso según Google</p></div></div>
+        <button class="btn-primary" id="btn-google-safe" style="width:100%;margin-top:12px;">Abrir Herramienta →</button>
+      </div>
+
+      <!-- EFF Cover Your Tracks -->
+      <div class="tool-card tool-link-card">
+        <div class="tool-card-header"><span class="tool-big-icon">🎭</span><div><h3>Cover Your Tracks</h3><p>Comprueba qué información expone tu navegador</p></div></div>
+        <button class="btn-primary" id="btn-cover-tracks" style="width:100%;margin-top:12px;">Probar Privacidad →</button>
+      </div>
+
+      <!-- SSL Labs -->
+      <div class="tool-card tool-link-card">
+        <div class="tool-card-header"><span class="tool-big-icon">🔏</span><div><h3>SSL Labs</h3><p>Analiza la seguridad del certificado SSL de un sitio</p></div></div>
+        <button class="btn-primary" id="btn-ssl-check" style="width:100%;margin-top:12px;">Verificar SSL →</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FAMILY MODE -->
+  <section class="page" id="page-family">
+    <h1 class="page-title">👨‍👩‍👧 Family Mode</h1>
+    <div class="card">
+      <div id="family-panel">Cargando...</div>
+    </div>
+  </section>
+
+   <!-- EDUCATION MODE -->
+  <section class="page" id="page-edu">
+    <h1 class="page-title">🎓 Modo Educativo</h1>
+    <div class="card">
+      <h2 class="card-title">Simulador de Phishing</h2>
+      <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:14px;">
+        Practica identificando URLs reales y falsas. CyberPet te explica cada error.
+        5 casos por sesión — el resultado sube o baja tu salud.
+      </p>
+      <div style="display:flex;gap:8px;margin-bottom:10px;">
+        <select id="edu-level-dash" class="form-input" style="flex:1;">
+          <option value="easy">Fácil — más tiempo para pensar</option>
+          <option value="normal" selected>Normal — equilibrado</option>
+          <option value="hard">Difícil — sin pistas</option>
+        </select>
+        <button class="btn btn-primary" id="edu-start-dash" style="width:auto;padding:9px 18px;">
+          Iniciar test
+        </button>
+      </div>
+      <div id="edu-panel-dash" class="tool-result" style="min-height:80px;">
+        Pulsa "Iniciar test" para comenzar. Se te mostrarán 5 URLs — decide si son reales o phishing.
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <h2 class="card-title">¿Cómo funciona?</h2>
+      <div style="font-size:.85rem;color:var(--text-muted);line-height:1.7;">
+        <p>• Se muestran 5 URLs al azar, algunas reales y otras de phishing simulado.</p>
+        <p>• Por cada acierto ganas puntos; por cada fallo el gato pierde salud.</p>
+        <p>• Si fallas una, CyberPet te explica la señal que debías detectar.</p>
+        <p>• Modo difícil: sin resaltado de partes sospechosas en la URL.</p>
+        <p>• Completa el test para desbloquear badges como "Ojo de Halcón".</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- INVENTARIO -->
+  <section class="page" id="page-inventory">
+    <h1 class="page-title">🎒 Inventario</h1>
+
+    <!-- Probador visual + accesorios lado a lado -->
+    <div class="card" style="display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start;">
+
+      <!-- Probador (dress-up) -->
+      <div style="flex:0 0 180px;text-align:center;">
+        <h2 class="card-title" style="font-size:1rem;margin-bottom:12px;">🪞 Probador</h2>
+        <div id="inv-tryon-preview" style="min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <!-- Rellenado por JS -->
+        </div>
+        <button id="inv-save-outfit" class="btn-primary" type="button"
+                style="margin-top:14px;width:100%;padding:10px 0;font-size:.88rem;">
+          💾 Guardar outfit
+        </button>
+        <button id="inv-clear-outfit" class="btn-secondary" type="button"
+                style="margin-top:8px;width:100%;padding:8px 0;font-size:.82rem;">
+          🗑️ Quitar todo
+        </button>
+      </div>
+
+      <!-- Lista de accesorios por slot -->
+      <div style="flex:1;min-width:220px;">
+        <h2 class="card-title" style="font-size:1rem;margin-bottom:12px;">👕 Accesorios</h2>
+        <div id="inv-cloth-list"></div>
+      </div>
+    </div>
+
+    <!-- Títulos -->
+    <div class="card" style="margin-top:16px;">
+      <h2 class="card-title">🏅 Títulos desbloqueados</h2>
+      <div id="inv-title-list" class="shop-grid-dash" style="margin-top:12px;"></div>
+    </div>
+  </section>
+
+  <!-- CHAT -->
+  <section class="page" id="page-chat">
+    <h1 class="page-title">💬 Chat con CyberPet</h1>
+    <div class="card" style="display:flex;flex-direction:column;height:calc(100vh - 180px);min-height:400px;">
+      <!-- Header del chat -->
+      <div class="dash-chat-header">
+        <img id="dash-chat-pet-img" src="../assets/sprites/happy.png" alt="pet" class="dash-chat-avatar" style="width:38px;height:38px;border-radius:50%;object-fit:cover;">
+        <div>
+          <div class="dash-chat-pet-name" id="dash-chat-pet-name" style="font-weight:700;font-size:1rem;">CyberPet</div>
+          <div style="font-size:.75rem;color:var(--text-muted);">Tu guardián digital 🛡️</div>
+        </div>
+        <button class="btn-secondary" id="dash-chat-clear" style="margin-left:auto;padding:6px 12px;font-size:.8rem;">🗑️ Limpiar</button>
+      </div>
+
+      <!-- Sugerencias rápidas -->
+      <div id="dash-chat-suggestions" style="display:flex;gap:8px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--border);">
+        <button class="suggestion-chip btn-secondary" style="padding:5px 10px;font-size:.78rem;border-radius:20px;">🔐 Contraseñas</button>
+        <button class="suggestion-chip btn-secondary" style="padding:5px 10px;font-size:.78rem;border-radius:20px;">🎣 Phishing</button>
+        <button class="suggestion-chip btn-secondary" style="padding:5px 10px;font-size:.78rem;border-radius:20px;">🛡️ Privacidad</button>
+        <button class="suggestion-chip btn-secondary" style="padding:5px 10px;font-size:.78rem;border-radius:20px;">📱 Redes sociales</button>
+        <button class="suggestion-chip btn-secondary" style="padding:5px 10px;font-size:.78rem;border-radius:20px;">🔒 VPN</button>
+      </div>
+
+      <!-- Mensajes -->
+      <div id="dash-chat-messages" style="flex:1;overflow-y:auto;padding:14px 0;display:flex;flex-direction:column;gap:10px;"></div>
+
+      <!-- Input -->
+      <div style="border-top:1px solid var(--border);padding-top:12px;display:flex;gap:8px;align-items:flex-end;">
+        <textarea id="dash-chat-input"
+          placeholder="Pregunta sobre ciberseguridad..."
+          maxlength="500"
+          rows="1"
+          style="flex:1;resize:none;overflow:hidden;padding:9px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:.9rem;background:var(--surface);color:var(--text);outline:none;"></textarea>
+        <button class="btn-primary" id="dash-chat-send" style="width:auto;padding:9px 16px;white-space:nowrap;">Enviar ↗</button>
+      </div>
+      <div style="font-size:.72rem;color:var(--text-muted);margin-top:4px;text-align:right;">
+        <span id="dash-chat-char">0 / 500</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section class="page" id="page-settings">
+    <h1 class="page-title">⚙️ Ajustes</h1>
+
+    <div class="settings-grid">
+
+      <div class="card">
+        <h2 class="card-title">🛡️ Funciones de Seguridad</h2>
+        <div class="setting-row"><div class="setting-info"><span class="setting-label">🔐 Verificar Contraseñas</span><span class="setting-desc">Detectar contraseñas débiles en formularios</span></div><label class="toggle"><input type="checkbox" id="password-check-toggle" checked><span class="slider"></span></label></div>
+        <div class="setting-row"><div class="setting-info"><span class="setting-label">🔤 Censurar Palabras</span><span class="setting-desc">Ocultar contenido con palabras bloqueadas</span></div><label class="toggle"><input type="checkbox" id="keyword-censor-toggle" checked><span class="slider"></span></label></div>
+        <div class="setting-row"><div class="setting-info"><span class="setting-label">🎣 Detectar Phishing</span><span class="setting-desc">Avisar sobre sitios sospechosos</span></div><label class="toggle"><input type="checkbox" id="phishing-detect-toggle" checked><span class="slider"></span></label></div>
+        <div class="setting-row"><div class="setting-info"><span class="setting-label">🔔 Notificaciones</span><span class="setting-desc">Recibir alertas del sistema</span></div><label class="toggle"><input type="checkbox" id="notifications-toggle" checked><span class="slider"></span></label></div>
+        <div class="setting-row"><div class="setting-info"><span class="setting-label">🐱 Shimeji</span><span class="setting-desc">Mostrar la mascota en páginas web</span></div><label class="toggle"><input type="checkbox" id="shimeji-toggle" checked><span class="slider"></span></label></div>
+      </div>
+
+      <!-- GROQ // QUITAR MAYBE -->
+      <div class="card groq-panel">
+        <h2 class="card-title">🤖 Análisis con IA (Groq)</h2>
+        <p style="font-size:.83rem;color:var(--text-muted);margin-bottom:10px;">
+          Activa el análisis de phishing con IA usando el modelo <strong>llama-3.3-70b</strong>.<br>
+        </p>
+        <div class="groq-status" id="groq-status-display">
+          <div class="groq-dot groq-off" id="groq-dot"></div>
+          <span id="groq-status-text">IA desactivada — introduce tu API key</span>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px;">
+          <input type="password" id="groq-api-key-input" class="form-input" placeholder="gsk_..." style="flex:1;margin:0;">
+          <button class="btn-primary" id="save-groq-key" style="width:auto;padding:9px 14px;">Guardar</button>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button class="btn-secondary" id="test-groq-key" style="width:auto;padding:7px 12px;font-size:.82rem;">Probar conexión</button>
+          <button class="btn-danger-sm" id="clear-groq-key" style="font-size:.82rem;">Borrar key</button>
+        </div>
+        <p id="groq-test-result" style="font-size:.78rem;margin-top:7px;"></p>
+        <p style="font-size:.73rem;color:var(--text-muted);margin-top:8px;">
+          ¿Sin API key? Créala gratis en <a href="https://console.groq.com" target="_blank" style="color:var(--blue);">console.groq.com</a> (límite gratuito generoso).
+        </p>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">🔤 Palabras Bloqueadas</h2>
+        <div class="input-row">
+          <input type="text" id="keyword-input" class="form-input" placeholder="Añadir palabra..." style="flex:1;">
+          <button class="btn-primary" id="add-keyword" style="width:auto;padding:10px 14px;">Añadir</button>
+        </div>
+        <div id="keyword-list" class="chip-list"></div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">✅ Sitios de Confianza (Whitelist)</h2>
+        <div class="input-row">
+          <input type="text" id="whitelist-input" class="form-input" placeholder="ej: wikipedia.org" style="flex:1;">
+          <button class="btn-primary" id="add-whitelist" style="width:auto;padding:10px 14px;">Añadir</button>
+        </div>
+        <div id="whitelist-list" class="chip-list"></div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">💾 Datos</h2>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn-primary" id="export-data" style="width:auto;">📤 Exportar Backup</button>
+          <button class="btn-secondary" id="import-data" style="width:auto;">📥 Importar Backup</button>
+          <button class="btn-danger" id="reset-data" style="width:auto;">🗑️ Resetear todo</button>
+        </div>
+        <input type="file" id="import-file-input" accept=".json" style="display:none;">
+
+        <div class="card" style="margin-top:16px;" id="export-import-section"></div>
+
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">🎨 Tema de color</h2>
+        <div class="theme-picker" role="group" aria-label="Selector de tema">
+          <button class="theme-swatch active" data-theme="blue" title="Blue" type="button" aria-pressed="true"></button>
+          <button class="theme-swatch" data-theme="pink" title="Pink" type="button" aria-pressed="false"></button>
+          <button class="theme-swatch" data-theme="purple" title="Purple" type="button" aria-pressed="false"></button>
+          <button class="theme-swatch" data-theme="mint" title="Mint" type="button" aria-pressed="false"></button>
+          <button class="theme-swatch" data-theme="peach" title="Peach" type="button" aria-pressed="false"></button>
+          <button class="theme-swatch" data-theme="ocean" title="Ocean" type="button" aria-pressed="false"></button>
+          <button class="theme-swatch" data-theme="forest" title="Forest" type="button" aria-pressed="false"></button>
+          <button class="theme-swatch" data-theme="candy" title="Candy" type="button" aria-pressed="false"></button>
+          <button class="theme-swatch" data-theme="night" title="Night" type="button" aria-pressed="false"></button>
+          <button class="theme-swatch" data-theme="sunset" title="Sunset" type="button" aria-pressed="false"></button>
+        </div>
+
+    </div>
+  </section>
+
+  <section class="page" id="page-badges"></section>
+</main>
+
+<div id="dashboard-toast" style="display:none;"></div>
+<script src="dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CyberPet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="popup.css">
+</head>
+<body data-theme="blue">
+
+<!-- ═══ SETUP ════════════════════════════════════════════════════════════ -->
+<div id="setup-screen" style="display:none;" role="main" aria-label="Configuración inicial">
+<div class="setup-container">
+
+  <!-- Paso 1: nombre del gato -->
+  <div class="setup-step active" id="setup-step-1">
+    <div class="setup-cat" id="s1-cat" aria-hidden="true">🐱</div>
+    <div class="setup-bubble" id="s1-bubble">¡Miau! Acabo de nacer... ¿cómo me vas a llamar?</div>
+    <h2 class="setup-title">Ponle nombre a tu CyberPet</h2>
+    <input type="text" class="setup-input" id="input-pet-name"
+           placeholder="ej: Hackercito, Pixel, Byte..."
+           maxlength="20" autocomplete="off" aria-label="Nombre del gato">
+    <button class="btn-primary" id="step1-next" type="button">Siguiente →</button>
+  </div>
+
+  <!-- Paso 2: nombre del usuario -->
+  <div class="setup-step" id="setup-step-2">
+    <div class="setup-cat" aria-hidden="true">😸</div>
+    <div class="setup-bubble" id="s2-bubble">¡Perfecto! ¿Y tú? ¿Cómo te llamo?</div>
+    <h2 class="setup-title">¿Cómo te llamas?</h2>
+    <input type="text" class="setup-input" id="input-user-name"
+           placeholder="Tu nombre..." maxlength="30" autocomplete="off" aria-label="Tu nombre">
+    <button class="btn-primary" id="step2-next" type="button">Siguiente →</button>
+  </div>
+
+  <!-- Paso 3: pronombres -->
+  <div class="setup-step" id="setup-step-3">
+    <div class="setup-cat" aria-hidden="true">🐾</div>
+    <div class="setup-bubble" id="s3-bubble">¿Cómo quieres que te hable?</div>
+    <h2 class="setup-title">Pronombres</h2>
+    <div class="pronoun-options" role="radiogroup" aria-label="Pronombres">
+      <button class="pronoun-btn active" data-value="el"   type="button" aria-pressed="true">Él</button>
+      <button class="pronoun-btn"        data-value="ella" type="button" aria-pressed="false">Ella</button>
+      <button class="pronoun-btn"        data-value="elle" type="button" aria-pressed="false">Elle</button>
+    </div>
+    <button class="btn-primary" id="step3-next" type="button">Siguiente →</button>
+  </div>
+
+  <!-- Paso 4: PIN bóveda -->
+  <div class="setup-step" id="setup-step-4">
+    <div class="setup-cat" aria-hidden="true">🔐</div>
+    <div class="setup-bubble">Crea un PIN de 4 dígitos para proteger tus contraseñas guardadas</div>
+    <h2 class="setup-title">PIN para la Bóveda</h2>
+    <p style="font-size:.8rem;color:var(--text-muted);text-align:center;margin-bottom:10px;">
+      Solo tú lo sabrás. Si lo olvidas, deberás reiniciar la bóveda.
+    </p>
+    <div id="setup-pin-dots" class="pin-dots" aria-label="PIN introducido" aria-live="polite">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="numpad" id="setup-numpad" role="group" aria-label="Teclado numérico">
+      <button class="num-btn" data-num="1" type="button">1</button>
+      <button class="num-btn" data-num="2" type="button">2</button>
+      <button class="num-btn" data-num="3" type="button">3</button>
+      <button class="num-btn" data-num="4" type="button">4</button>
+      <button class="num-btn" data-num="5" type="button">5</button>
+      <button class="num-btn" data-num="6" type="button">6</button>
+      <button class="num-btn" data-num="7" type="button">7</button>
+      <button class="num-btn" data-num="8" type="button">8</button>
+      <button class="num-btn" data-num="9" type="button">9</button>
+      <button class="num-btn" data-num="clear" type="button" aria-label="Borrar">⌫</button>
+      <button class="num-btn" data-num="0"     type="button">0</button>
+      <button class="num-btn btn-confirm" data-num="ok" type="button" aria-label="Confirmar">✓</button>
+    </div>
+    <button class="btn-skip" id="skip-pin" type="button">Saltar por ahora →</button>
+  </div>
+
+  <!-- Paso 5: bienvenida -->
+  <div class="setup-step" id="setup-step-5">
+    <div class="setup-cat setup-cat--bounce" aria-hidden="true">🎉</div>
+    <div class="setup-bubble" id="s5-bubble">
+      ¡Todo listo! Soy tu guardián digital. ¡Juntos navegaremos seguros!
+    </div>
+    <h2 class="setup-title" id="s5-title">¡Bienvenido!</h2>
+    <button class="btn-primary" id="step5-finish" type="button">¡Empecemos! 🚀</button>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══ VAULT LOCK SCREEN ═════════════════════════════════════════════════ -->
+<div id="vault-lock-screen" style="display:none;" role="main" aria-label="Bóveda bloqueada">
+  <div class="lock-container">
+    <div class="lock-cat" aria-hidden="true">🔒</div>
+    <h2 class="lock-title">Bóveda Bloqueada</h2>
+    <p class="lock-sub">Ingresa tu PIN de 4 dígitos</p>
+    <div id="vault-pin-dots" class="pin-dots" aria-label="PIN introducido" aria-live="polite">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="numpad" id="vault-numpad" role="group" aria-label="Teclado numérico">
+      <button class="num-btn" data-num="1" type="button">1</button>
+      <button class="num-btn" data-num="2" type="button">2</button>
+      <button class="num-btn" data-num="3" type="button">3</button>
+      <button class="num-btn" data-num="4" type="button">4</button>
+      <button class="num-btn" data-num="5" type="button">5</button>
+      <button class="num-btn" data-num="6" type="button">6</button>
+      <button class="num-btn" data-num="7" type="button">7</button>
+      <button class="num-btn" data-num="8" type="button">8</button>
+      <button class="num-btn" data-num="9" type="button">9</button>
+      <button class="num-btn" data-num="clear" type="button" aria-label="Borrar">⌫</button>
+      <button class="num-btn" data-num="0"     type="button">0</button>
+      <button class="num-btn btn-confirm" data-num="ok" type="button" aria-label="Confirmar">✓</button>
+    </div>
+    <p id="vault-pin-error" class="field-error" style="display:none;" role="alert"></p>
+    <button class="btn-skip" id="vault-back-btn" type="button">← Volver</button>
+  </div>
+</div>
+
+<!-- ═══ MAIN SCREEN ═══════════════════════════════════════════════════════ -->
+<div id="main-screen" style="display:none;" role="main">
+
+  <!-- Header -->
+  <div class="header">
+    <h1 class="greeting" id="greeting-text">¡Hola!</h1>
+    <div class="user-title-row">
+      <span id="user-title-badge">Novato Digital</span>
+      <span class="dot-sep" aria-hidden="true">·</span>
+      <span>Family: <span id="family-badge" class="badge-off">OFF</span></span>
+    </div>
+  </div>
+
+  <!-- Mascota -->
+  <div class="pet-section">
+    <div class="pet-wrapper" id="pet-wrapper" role="button"
+         aria-label="Interactuar con la mascota">
+      <img id="pet-base" class="pet-img" src="../assets/sprites/neutral.png"
+           alt="CyberPet mascota" draggable="false">
+       <img id="pet-cloth-overlay" class="pet-img" src="" alt=""
+       draggable="false" style="position:absolute;top:0;left:0;display:none;">
+    </div>
+    <div class="pet-info">
+      <div class="pet-name-pop"  id="pet-name-display">CyberPet</div>
+      <div class="pet-state-pop">Estado: <span id="pet-state-emoji">😐</span></div>
+    </div>
+    <div class="health-section">
+      <div class="health-label">
+        <span>Salud</span>
+        <span id="health-pct">100%</span>
+      </div>
+      <div class="health-bar-bg">
+        <div class="health-bar" id="health-bar" style="width:100%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Economía -->
+  <div class="economy-row">
+    <div class="econ-chip">
+      <span class="econ-icon" aria-hidden="true">🏆</span>
+      <div><span class="econ-label">Puntos</span><span id="points-val" class="econ-val">0</span></div>
+    </div>
+    <div class="econ-chip">
+      <span class="econ-icon" aria-hidden="true">🪙</span>
+      <div><span class="econ-label">Monedas</span><span id="coins-val" class="econ-val">0</span></div>
+    </div>
+    <div class="econ-chip">
+      <span class="econ-icon" aria-hidden="true">⏱️</span>
+      <div><span class="econ-label">Hoy</span><span id="time-val" class="econ-val">0m</span></div>
+    </div>
+    <div class="econ-chip">
+      <span class="econ-icon" aria-hidden="true">🔥</span>
+      <div><span class="econ-label">Racha</span><span id="streak-val" class="econ-val">0</span></div>
+    </div>
+  </div>
+
+  <!-- Última actividad -->
+  <div class="activity-card">
+    <div class="activity-label">Última actividad:</div>
+    <div class="activity-text" id="last-activity-text">¡Bienvenido!</div>
+  </div>
+
+  <!-- Botones de acción -->
+  <div class="action-row">
+    <button class="action-btn btn-dash"   id="btn-dashboard"  type="button">📊 Dashboard</button>
+    <button class="action-btn btn-toggle" id="btn-toggle-pet" type="button">
+      <span id="toggle-eye" aria-hidden="true">👁️</span>
+      <span id="toggle-label">Ocultar Gato</span>
+    </button>
+  </div>
+  <button class="btn-primary" id="btn-family-quick" type="button" style="margin-bottom:11px;">
+    👨‍👩‍👧 Family Mode
+  </button>
+
+  <!-- Tabs -->
+  <div class="tabs" role="tablist">
+    <button class="tab-btn active" data-tab="vault"    role="tab" aria-selected="true"  title="Bóveda de contraseñas">🔐</button>
+    <button class="tab-btn"        data-tab="tools"    role="tab" aria-selected="false" title="Herramientas">🔍</button>
+    <button class="tab-btn"        data-tab="shop"     role="tab" aria-selected="false" title="Tienda">🛍️</button>
+    <button class="tab-btn"        data-tab="chat"     role="tab" aria-selected="false" title="Chat con CyberPet">💬</button>
+    <button class="tab-btn"        data-tab="settings" role="tab" aria-selected="false" title="Configuración">⚙️</button>
+  </div>
+
+  <!-- ── Tab: Bóveda ──────────────────────────── -->
+  <div class="tab-content active" id="tab-vault" role="tabpanel">
+    <!-- Vista bloqueada -->
+    <div id="vault-locked-view" class="vault-locked-view">
+      <div style="font-size:2.8rem;margin-bottom:7px;" aria-hidden="true">🔒</div>
+      <h3 style="color:var(--accent);margin-bottom:5px;">Bóveda de Contraseñas</h3>
+      <p class="vault-sub">Guarda tus contraseñas protegidas con PIN local</p>
+      <button class="btn-primary" id="btn-open-vault" type="button">Desbloquear Bóveda</button>
+    </div>
+    <!-- Vista desbloqueada -->
+    <div id="vault-unlocked-view" style="display:none;">
+      <div class="vault-top">
+        <span style="font-weight:700;color:var(--accent);">🔓 Bóveda</span>
+        <button class="btn-vault-lock" id="btn-lock-vault" type="button">Bloquear 🔒</button>
+      </div>
+      <input type="search" class="vault-search" id="vault-search"
+             placeholder="🔍 Buscar sitio..." aria-label="Buscar en bóveda">
+      <button class="btn-add-vault" id="btn-add-vault" type="button">➕ Añadir Contraseña</button>
+
+      <!-- Formulario añadir -->
+      <div id="vault-add-form" style="display:none;" aria-label="Nueva contraseña">
+        <input type="text"     class="vault-input" id="v-site"
+               placeholder="Sitio web (ej: google.com)" autocomplete="off">
+        <input type="text"     class="vault-input" id="v-user"
+               placeholder="Usuario / Email" autocomplete="off">
+        <div class="vault-pwd-row">
+          <input type="password" class="vault-input" id="v-pwd"
+                 placeholder="Contraseña" style="flex:1;margin:0;" autocomplete="new-password">
+          <button class="btn-icon-sm" id="v-toggle-pwd" type="button" title="Mostrar/ocultar">👁️</button>
+          <button class="btn-icon-sm" id="v-gen-pwd"    type="button" title="Generar contraseña">🔑</button>
+        </div>
+        <div class="strength-bg"><div id="v-strength-bar" class="strength-fill"></div></div>
+        <p id="v-strength-label" style="font-size:.71rem;color:var(--text-muted);margin-bottom:8px;min-height:1em;"></p>
+        <div style="display:flex;gap:7px;">
+          <button class="btn-save-entry"   id="v-save"   type="button">💾 Guardar</button>
+          <button class="btn-cancel-entry" id="v-cancel" type="button">Cancelar</button>
+        </div>
+      </div>
+
+      <div id="vault-entries" role="list"></div>
+    </div>
+  </div>
+
+  <!-- ── Tab: Herramientas ──────────────────────── -->
+  <div class="tab-content" id="tab-tools" role="tabpanel">
+    <div class="tools-grid">
+      <button class="tool-card-pop" id="tool-virustotal"   type="button">
+        <span class="tool-icon-pop" aria-hidden="true">🔬</span>
+        <span class="tool-name-pop">VirusTotal</span>
+        <span class="tool-desc-pop">Escanear URL</span>
+      </button>
+      <button class="tool-card-pop" id="tool-hibp"         type="button">
+        <span class="tool-icon-pop" aria-hidden="true">🕵️</span>
+        <span class="tool-name-pop">¿Fui hackeado?</span>
+        <span class="tool-desc-pop">Email filtrado</span>
+      </button>
+      <button class="tool-card-pop" id="tool-pwned-pwd"    type="button">
+        <span class="tool-icon-pop" aria-hidden="true">🔓</span>
+        <span class="tool-name-pop">Pwd filtrada</span>
+        <span class="tool-desc-pop">Verificar</span>
+      </button>
+      <button class="tool-card-pop" id="tool-google-safe"  type="button">
+        <span class="tool-icon-pop" aria-hidden="true">🛡️</span>
+        <span class="tool-name-pop">Google Safe</span>
+        <span class="tool-desc-pop">Sitio seguro</span>
+      </button>
+      <button class="tool-card-pop" id="tool-cover-tracks" type="button">
+        <span class="tool-icon-pop" aria-hidden="true">🎭</span>
+        <span class="tool-name-pop">Privacidad</span>
+        <span class="tool-desc-pop">¿Me rastrean?</span>
+      </button>
+      <button class="tool-card-pop" id="tool-password-gen" type="button">
+        <span class="tool-icon-pop" aria-hidden="true">🔑</span>
+        <span class="tool-name-pop">Generar pwd</span>
+        <span class="tool-desc-pop">Segura</span>
+      </button>
+    </div>
+    <div id="hibp-mini-panel" class="gen-panel" style="display:none;" aria-label="Verificar email filtrado">
+      <div class="gen-header">
+        <span>🕵️ ¿Fui hackeado?</span>
+        <button class="tool-close" id="close-hibp-mini" type="button" aria-label="Cerrar panel">✕</button>
+      </div>
+      <input id="hibp-mini-email" class="vault-input" type="email" placeholder="tuemail@ejemplo.com">
+      <button id="hibp-mini-check" class="btn-primary" style="width:100%;margin-top:8px;padding:9px;" type="button">Verificar</button>
+      <div id="hibp-mini-result" style="font-size:.77rem;color:var(--text-muted);margin-top:8px;"></div>
+    </div>
+    <div id="pwned-mini-panel" class="gen-panel" style="display:none;" aria-label="Verificar contraseña filtrada">
+      <div class="gen-header">
+        <span>🔓 ¿Contraseña filtrada?</span>
+        <button class="tool-close" id="close-pwned-mini" type="button" aria-label="Cerrar panel">✕</button>
+      </div>
+      <input id="pwned-mini-password" class="vault-input" type="password" placeholder="Contraseña a verificar">
+      <button id="pwned-mini-check" class="btn-primary" style="width:100%;margin-top:8px;padding:9px;" type="button">Verificar</button>
+      <div id="pwned-mini-result" style="font-size:.77rem;color:var(--text-muted);margin-top:8px;"></div>
+    </div>
+
+    <!-- Panel generador -->
+    <div id="pwdgen-panel" class="gen-panel" style="display:none;" aria-label="Generador de contraseñas">
+      <div class="gen-header">
+        <span>🔑 Generador</span>
+        <button class="tool-close" id="close-gen" type="button" aria-label="Cerrar generador">✕</button>
+      </div>
+      <label style="font-size:.81rem;color:var(--text-muted);">
+        Longitud: <span id="gen-len-val">16</span>
+      </label>
+      <input type="range" id="gen-len" min="8" max="32" value="16"
+             style="width:100%;margin:5px 0 9px;accent-color:var(--accent);"
+             aria-label="Longitud de la contraseña">
+      <button id="gen-now" class="btn-primary" style="width:100%;margin-bottom:9px;padding:9px;"
+              type="button">Generar</button>
+      <div id="gen-result" style="display:none;" class="gen-output">
+        <code id="gen-pwd-text" aria-live="polite"></code>
+        <button id="gen-copy" class="btn-copy" type="button" aria-label="Copiar contraseña">📋</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Tab: Tienda ──────────────────────────── -->
+  <div class="tab-content" id="tab-shop" role="tabpanel">
+    <div class="shop-header">
+      <h3>🛍️ Tienda</h3>
+      <div class="shop-balance">
+        <span class="balance-chip-pop">🪙 <span id="shop-coins">0</span></span>
+        <span class="balance-chip-pop">🏆 <span id="shop-points">0</span></span>
+      </div>
+    </div>
+    <div class="shop-tabs-pop" role="tablist">
+      <button class="shop-tab-pop active" data-stab="cloth"      role="tab" type="button">👕</button>
+      <button class="shop-tab-pop"        data-stab="item"       role="tab" type="button">🎁</button>
+      <button class="shop-tab-pop"        data-stab="title"      role="tab" type="button">🏅</button>
+      <button class="shop-tab-pop"        data-stab="extra_time" role="tab" type="button" id="shop-tab-extra-time">⏰</button>
+    </div>
+    <div class="shop-grid-pop" id="shop-grid-pop" role="tabpanel"></div>
+  </div>
+
+  <!-- ── Tab: Chat ─────────────────────────────── -->
+  <div class="tab-content" id="tab-chat" role="tabpanel" aria-label="Chat con CyberPet">
+
+    <!-- Header del chat -->
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <span class="chat-avatar" id="chat-avatar" aria-hidden="true">🐱</span>
+        <div>
+          <div class="chat-name" id="chat-pet-name">CyberPet</div>
+          <div class="chat-status" id="chat-status">Tu guardián digital</div>
+        </div>
+      </div>
+      <button class="chat-clear-btn" id="chat-clear" type="button" title="Limpiar conversación"
+              aria-label="Limpiar conversación">🗑️</button>
+    </div>
+
+    <!-- Mensajes -->
+    <div class="chat-messages" id="chat-messages" role="log" aria-live="polite" aria-label="Conversación">
+      <!-- Los mensajes se inyectan aquí por JS -->
+    </div>
+    <div id="chat-options-container" class="chat-options-container" aria-label="Opciones rápidas"></div>
+
+    <!-- Sin API key — aviso -->
+    <div id="chat-no-key" class="chat-no-key" style="display:none;">
+      <span aria-hidden="true">🔑</span>
+      <p>Necesitas una API key de Groq para chatear.</p>
+      <button class="btn-primary" id="chat-go-settings" type="button"
+              style="margin-top:8px;padding:7px 14px;font-size:.82rem;">
+        Configurar en Ajustes →
+      </button>
+    </div>
+
+    <!-- Input -->
+    <div class="chat-input-row" id="chat-input-row">
+      <textarea
+        id="chat-input"
+        class="chat-input"
+        placeholder="Pregúntame sobre seguridad..."
+        rows="1"
+        maxlength="500"
+        aria-label="Mensaje para CyberPet"
+      ></textarea>
+      <button class="chat-send-btn" id="chat-send" type="button" aria-label="Enviar mensaje">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+
+  </div><!-- /tab-chat -->
+
+  <!-- ── Tab: Configuración ───────────────────── -->
+  <div class="tab-content" id="tab-settings" role="tabpanel">
+    <h3 style="color:var(--accent);margin-bottom:11px;">⚙️ Configuración</h3>
+
+    <div class="setting-item">
+      <div>
+        <span class="setting-label">🎨 Tema de color</span>
+        <span class="setting-desc">Elige el estilo visual</span>
+      </div>
+      <div class="theme-picker" role="group" aria-label="Selector de tema">
+        <button class="theme-dot active" data-theme="blue" title="Blue" type="button" aria-pressed="true"></button>
+        <button class="theme-dot" data-theme="pink" title="Pink" type="button" aria-pressed="false"></button>
+        <button class="theme-dot" data-theme="purple" title="Purple" type="button" aria-pressed="false"></button>
+        <button class="theme-dot" data-theme="mint" title="Mint" type="button" aria-pressed="false"></button>
+        <button class="theme-dot" data-theme="peach" title="Peach" type="button" aria-pressed="false"></button>
+        <button class="theme-dot" data-theme="ocean" title="Ocean" type="button" aria-pressed="false"></button>
+        <button class="theme-dot" data-theme="forest" title="Forest" type="button" aria-pressed="false"></button>
+        <button class="theme-dot" data-theme="candy" title="Candy" type="button" aria-pressed="false"></button>
+        <button class="theme-dot" data-theme="night" title="Night" type="button" aria-pressed="false"></button>
+        <button class="theme-dot" data-theme="sunset" title="Sunset" type="button" aria-pressed="false"></button>
+      </div>
+    </div>
+
+    <div class="setting-item">
+      <div>
+        <span class="setting-label">🔐 Verificar Contraseñas</span>
+        <span class="setting-desc">Detectar contraseñas débiles</span>
+      </div>
+      <label class="toggle" aria-label="Verificar contraseñas">
+        <input type="checkbox" id="set-pwdcheck" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="setting-item">
+      <div>
+        <span class="setting-label">🔤 Censurar Palabras</span>
+        <span class="setting-desc">Bloquear contenido sensible</span>
+      </div>
+      <label class="toggle" aria-label="Censurar palabras">
+        <input type="checkbox" id="set-keywords" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="setting-item">
+      <div>
+        <span class="setting-label">🎣 Detectar Phishing</span>
+        <span class="setting-desc">Avisar sobre sitios sospechosos</span>
+      </div>
+      <label class="toggle" aria-label="Detectar phishing">
+        <input type="checkbox" id="set-phishing" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="setting-item">
+      <div>
+        <span class="setting-label">🔔 Notificaciones</span>
+        <span class="setting-desc">Recibir alertas del sistema</span>
+      </div>
+      <label class="toggle" aria-label="Notificaciones">
+        <input type="checkbox" id="set-notif" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="setting-item">
+      <div>
+        <span class="setting-label">🐾 Movimiento del gato</span>
+        <span class="setting-desc">Detener o reanudar el movimiento</span>
+      </div>
+      <label class="toggle" aria-label="Movimiento del gato">
+        <input type="checkbox" id="set-movement" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <button class="btn-secondary" id="btn-open-dashboard" style="margin-top:8px;width:100%;" type="button">
+      📊 Abrir Dashboard
+    </button>
+  </div>
+
+</div><!-- /main-screen -->
+
+<!-- ═══ MODAL: Family Mode ════════════════════════════════════════════════ -->
+<div class="modal" id="family-modal" role="dialog" aria-modal="true" aria-label="Family Mode">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">👨‍👩‍👧 Family Mode</h3>
+      <button class="modal-close" id="close-family-modal" type="button" aria-label="Cerrar">✕</button>
+    </div>
+
+    <!-- Vista: activar -->
+    <div id="family-setup-view">
+      <p class="help-text">
+        Establece límites de tiempo de navegación. Solo el PIN del apoderado puede modificarlos.
+        <a href="#" id="fam-open-guide-link" style="color:var(--accent);font-size:.78rem;display:block;margin-top:4px;">
+          📖 Ver guía completa en el Dashboard →
+        </a>
+      </p>
+      <label class="modal-label" for="family-pin-input">PIN del Apoderado (4 dígitos)</label>
+      <input type="password" class="modal-input" id="family-pin-input"
+             maxlength="4" placeholder="••••" autocomplete="new-password">
+      <label class="modal-label" for="family-pin-confirm">Confirmar PIN</label>
+      <input type="password" class="modal-input" id="family-pin-confirm"
+             maxlength="4" placeholder="••••" autocomplete="new-password">
+      <label class="modal-label" for="family-max-time">Límite diario (minutos, 0 = sin límite)</label>
+      <input type="number" class="modal-input" id="family-max-time" value="120" min="0" max="1440">
+      <p style="font-size:.74rem;color:var(--text-muted);margin:-4px 0 4px;">
+        💡 60 min para primaria · 120 min para secundaria · 0 = sin límite
+      </p>
+      <!-- family-recovery-section: se oculta si ya hay recovery guardado (lo gestiona popup.js) -->
+      <div id="family-recovery-section">
+        <label class="modal-label" for="family-recovery-question">Pregunta de seguridad</label>
+        <input type="text" class="modal-input" id="family-recovery-question"
+               maxlength="80" placeholder="Ej: nombre del colegio">
+        <label class="modal-label" for="family-recovery-answer">Respuesta de seguridad</label>
+        <input type="text" class="modal-input" id="family-recovery-answer"
+               maxlength="80" placeholder="Respuesta para recuperar el PIN">
+        <p style="font-size:.74rem;color:var(--text-muted);margin:-4px 0 4px;">
+          🔑 Úsala si olvidas el PIN. Guárdala en un lugar seguro.
+        </p>
+      </div>
+      <!-- Mensaje que aparece cuando ya existe un recovery guardado -->
+      <p id="family-recovery-done" style="display:none;font-size:.8rem;color:#22c55e;margin:4px 0 8px;">
+        ✅ Pregunta de seguridad ya configurada — no hace falta volver a introducirla.
+      </p>
+      <p id="family-setup-error" class="field-error" style="display:none;" role="alert"></p>
+      <button class="btn-primary" id="btn-activate-family" type="button">Activar Family Mode</button>
+
+      <!-- Recuperación de PIN cuando el modo está desactivado pero ya hubo uno antes -->
+      <div id="family-forgot-pin-section" style="display:none;margin-top:10px;">
+        <details>
+          <summary style="cursor:pointer;font-size:.8rem;color:var(--text-muted);padding:4px 0;">
+            🔑 ¿Olvidaste el PIN anterior?
+          </summary>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;margin-top:8px;display:flex;flex-direction:column;gap:8px;">
+            <p id="family-forgot-question-text" style="font-size:.82rem;font-weight:600;color:var(--text);margin:0;"></p>
+            <input type="text" class="modal-input" id="family-forgot-answer"
+                   maxlength="80" placeholder="Tu respuesta de seguridad" autocomplete="off">
+            <input type="password" class="modal-input" id="family-forgot-newpin"
+                   maxlength="4" placeholder="Nuevo PIN (4 dígitos)" autocomplete="new-password">
+            <input type="password" class="modal-input" id="family-forgot-newpin-confirm"
+                   maxlength="4" placeholder="Confirmar nuevo PIN" autocomplete="new-password">
+            <p id="family-forgot-error" class="field-error" style="display:none;" role="alert"></p>
+            <button class="btn-primary" id="btn-family-forgot-recover" type="button">
+              🔓 Recuperar acceso
+            </button>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- Vista: gestionar -->
+    <div id="family-manage-view" style="display:none;">
+      <p class="help-text" style="margin-bottom:6px;">
+        Tiempo hoy: <strong id="fam-usage">0</strong> / <strong id="fam-max">120</strong> min
+      </p>
+      <p style="font-size:.74rem;color:var(--text-muted);margin-bottom:10px;">
+        ⚙️ Para cambiar filtros, URLs y más opciones usa el <strong>Dashboard → Family Mode</strong>.
+      </p>
+      <label class="modal-label" for="family-admin-pin">PIN para modificar</label>
+      <input type="password" class="modal-input" id="family-admin-pin"
+             maxlength="4" placeholder="••••" autocomplete="off">
+      <p id="family-manage-error" class="field-error" style="display:none;" role="alert"></p>
+      <button class="btn-primary"   id="btn-disable-family" style="margin-bottom:8px;" type="button">
+        Desactivar Family Mode
+      </button>
+      <details style="margin:8px 0;" id="family-manage-forgot-details">
+        <summary style="cursor:pointer;font-size:.82rem;color:var(--text-muted);padding:4px 0;">
+          🔑 ¿Olvidaste o quieres cambiar el PIN?
+        </summary>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;margin-top:8px;display:flex;flex-direction:column;gap:8px;">
+          <p id="family-recovery-question-text" style="font-size:.82rem;font-weight:600;color:var(--text);margin:0;"></p>
+          <input type="text" class="modal-input" id="family-recovery-answer-check"
+                 placeholder="Tu respuesta de seguridad" autocomplete="off">
+          <input type="password" class="modal-input" id="family-new-pin"
+                 maxlength="4" placeholder="Nuevo PIN (4 dígitos)" autocomplete="new-password">
+          <input type="password" class="modal-input" id="family-new-pin-confirm"
+                 maxlength="4" placeholder="Confirmar nuevo PIN" autocomplete="new-password">
+          <p id="family-manage-recovery-error" class="field-error" style="display:none;" role="alert"></p>
+          <button class="btn-primary" id="btn-reset-family-pin" type="button">Cambiar PIN</button>
+        </div>
+      </details>
+      <p style="font-size:.74rem;color:var(--text-muted);text-align:center;">
+        Para más opciones visita el Dashboard
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+/*
+ * CyberPet — pet-overlay.css
+ * FIXES:
+ * - Menú contextual rediseñado: más limpio, sin borde azul fuerte
+ * - Shimeji: sin outline al hacer click
+ * - Separador entre items del menú
+ */
+
+/* ── Shimeji ─────────────────────────────────────────── */
+#cyberpet-shimeji {
+    position: fixed !important;
+    width: 80px !important;
+    height: 80px !important;
+    z-index: 999999 !important;
+    cursor: grab !important;
+    user-select: none !important;
+    pointer-events: auto !important;
+    transition: transform 0.2s ease, opacity 0.3s ease !important;
+    /* FIX: sin outline azul al hacer click o focus */
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+#cyberpet-shimeji:active {
+    cursor: grabbing !important;
+}
+
+#cyberpet-sprite {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    display: block !important;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25)) !important;
+    pointer-events: none !important;
+    /* FIX: sin outline en imagen */
+    outline: none !important;
+}
+
+/* ── Menú contextual — rediseñado ────────────────────── */
+#cyberpet-context-menu {
+    position: fixed !important;
+    background: var(--surface, #ffffff) !important;
+    border: 1px solid var(--border, rgba(38,99,157,0.15)) !important;
+    border-radius: 14px !important;
+    padding: 6px !important;
+    box-shadow: var(--shadow-lg, 0 6px 28px rgba(38,99,157,0.17)) !important;
+    z-index: 1000000 !important;
+    min-width: 195px !important;
+    font-family: 'Roboto Condensed', -apple-system, sans-serif !important;
+    animation: cyberpet-menuIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+}
+
+/* ── Items del menú ─────────────────────────────────── */
+.cyberpet-menu-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 10px 14px !important;
+    margin: 2px 0 !important;
+    background: transparent !important;
+    color: var(--text, #0f2238) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-family: 'Roboto Condensed', -apple-system, sans-serif !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    width: 100% !important;
+    text-align: left !important;
+    transition: all 0.15s ease !important;
+    outline: none !important;
+    user-select: none !important;
+}
+
+.cyberpet-menu-item:hover {
+    background: var(--c1, #cce0f5) !important;
+    color: var(--accent, #26639d) !important;
+    transform: translateX(2px);
+}
+
+.cyberpet-menu-item:active {
+    background: var(--border, rgba(38,99,157,0.15)) !important;
+    transform: scale(0.97) translateX(2px) !important;
+}
+
+/* Item de peligro (rojo) */
+.cyberpet-menu-item.danger {
+    color: var(--danger, #ff483d) !important;
+}
+.cyberpet-menu-item.danger:hover {
+    background: #fff0ef !important;
+    color: var(--danger-dark, #d4281e) !important;
+}
+
+/* Icono del item */
+.cyberpet-menu-icon {
+    font-size: 1.1rem !important;
+    line-height: 1 !important;
+    flex-shrink: 0 !important;
+    width: 22px !important;
+    text-align: center !important;
+    color: var(--accent, #26639d) !important;
+}
+
+/* ── Separador ─────────────────────────────────────── */
+.cyberpet-menu-sep {
+    height: 1px !important;
+    background: var(--border, rgba(38,99,157,0.15)) !important;
+    margin: 6px 12px !important;
+    border: none !important;
+}
+
+/* ── Header del menú (nombre del gato) ─────────────── */
+.cyberpet-menu-header {
+    padding: 10px 14px 6px !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    color: var(--accent, #26639d) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+    font-family: 'Roboto Condensed', sans-serif !important;
+    user-select: none !important;
+    border-bottom: 1px solid var(--border, rgba(38,99,157,0.15)) !important;
+    margin-bottom: 4px !important;
+}
+
+/* ── Animaciones ────────────────────────────────────── */
+@keyframes cyberpet-menuIn {
+    from {
+        opacity: 0;
+        transform: scale(0.92) translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes cyberpet-shake {
+    0%, 100% { transform: translateX(0); }
+    20%       { transform: translateX(-8px); }
+    40%       { transform: translateX(8px); }
+    60%       { transform: translateX(-6px); }
+    80%       { transform: translateX(6px); }
+}
+
+@keyframes cyberpet-fadeOut {
+    from { opacity: 0.35; }
+    to   { opacity: 0; }
+}
+
+@keyframes cyberpet-slideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
